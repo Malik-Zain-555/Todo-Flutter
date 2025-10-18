@@ -1,88 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/Screens/AddTaskPage.dart';
+import 'package:todo_list/Screens/CompletedTasksPage.dart';
+import 'HomePage.dart'; // Your current HomePage file
 
 void main() {
-  runApp(MaterialApp(
-      home: HomePage()),
-  );
+  runApp(MaterialApp(home: MainPage()));
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+class MainPage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainPageState extends State<MainPage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    HomePage(),
+    AddTaskPage(),
+    CompletedTasksPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text("Todo List"),
-        backgroundColor: Colors.yellowAccent[700],
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w500),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Container(
-            child:Padding(padding: EdgeInsetsGeometry.fromLTRB(15,20,15,0),
-              child: TextField(
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                  hintText: "enter your task",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  )
-              ),
-            ),
-            ) ,
-          ),
-          Container(
-            child:Padding(padding: EdgeInsetsGeometry.all(15),
-              child: TextField(
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                    hintText: "description",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    )
-                ),
-              ),
-            ) ,
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 15,
-              children: [
-                ElevatedButton(onPressed: (){}, child: Text("clear", style: TextStyle(color: Colors.white),), style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                ),),
-                ElevatedButton(onPressed: (){}, child: Text("create", style: TextStyle(color: Colors.white),), style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightGreen,
-                ),)
-              ],
-            ),
-          )
-        ],
+      body: AnimatedSwitcher(
+        duration: Duration(milliseconds: 250),
+        transitionBuilder: (child, animation) => SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+        child: _pages[_selectedIndex],
       ),
       bottomNavigationBar: BottomAppBar(
-         // height: 100,
         color: Colors.yellowAccent[700],
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.home,size: 40, color: Colors.black)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.bookmark_border_outlined,size: 40,color: Colors.black)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.add_circle,size: 40,color: Colors.black)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.incomplete_circle,size: 40,color: Colors.black)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.done,size: 40,color: Colors.black))
+            IconButton(
+              icon: Icon(Icons.home, size: 40, color: Colors.black),
+              onPressed: () => setState(() => _selectedIndex = 0),
+            ),
+            IconButton(
+              icon: Icon(Icons.add_circle, size: 40, color: Colors.black),
+              onPressed: () => setState(() => _selectedIndex = 1),
+            ),
+            IconButton(
+              icon: Icon(Icons.done, size: 40, color: Colors.black),
+              onPressed: () => setState(() => _selectedIndex = 2),
+            ),
           ],
         ),
-      ) ,
+      ),
     );
   }
 }
